@@ -1,0 +1,15 @@
+Metadata-Version: 1.0
+Name: getch
+Version: 1.0
+Summary: Does single char input, like C getch/getche
+Home-page: UNKNOWN
+Author: UNKNOWN
+Author-email: UNKNOWN
+License: UNKNOWN
+Description: The getch module does single-char input by
+        providing wrappers for the conio.h library
+        functions getch() and getche(), if conio.h
+        does not exist, it uses a stub-library using
+        termios.h and other headers to emulate this
+        behaviour.
+Platform: UNKNOWN
