@@ -32,10 +32,12 @@ def setBorder():
 
 
 def printMap():
-    print("\033[0;0H")
+    # print("\033[0;0H")
     for i in range(SIZE):
         for j in range(SIZE):
             if map[i][j] == 'p':
+                print('o', end=' ')
+            elif map[i][j] == 'P':
                 print('O', end=' ')
             elif map[i][j] == '*':
                 print('*', end=' ')
@@ -57,9 +59,9 @@ def startGame(i, j):
 def movePlayer():
     # win = False
     # global f
-    global last_key
+    global last_key, score
     while True:
-        time.sleep(0.1)
+        # time.sleep(0.1)
         printMap()
         get_key = choises[random.randint(0, 3)]
         while (last_key == 'w' and get_key == 's') or (last_key == 'a' and get_key == 'd') or \
@@ -67,6 +69,7 @@ def movePlayer():
             get_key = choises[random.randint(0, 3)]
         print("last_key: ", last_key)
         print("get_key: ", get_key)
+        print("score: ", score)
         last_key = get_key
         switcher = {
             'w': goUp,
@@ -96,11 +99,16 @@ def checkForWall(i, j):
         return True
     return False
 
+def checkForBody(i, j):
+    if map[i][j] == 'p':
+        print("body      ")
+        return True
+    return False
 
 def checkForFood(i, j):
     global score
     if map[i][j] == '*':
-        print("food      ")
+        # print("food      ")
         score = score + 1
         setFood()
 
@@ -116,8 +124,8 @@ def setFood():
 def move(i, j):
     global temp_score, score
 
-    print("tmp_scr: ", temp_score)
-    print("score: ", score, "  ")
+    # print("tmp_scr: ", temp_score)
+    # print("score: ", score, "  ")
     if temp_score == score:
         body.reverse()
         body.pop()
@@ -129,20 +137,26 @@ def move(i, j):
 
     for i in range(SIZE):
         for j in range(SIZE):
-            if map[i][j] == 'p':
+            if map[i][j] == 'p' or map[i][j] == 'P':
                 map[i][j] = ' '
     for number in range(score):
-        map[body[number].i][body[number].j] = 'p'
+        if number == score-1:
+            map[body[number].i][body[number].j] = 'P'
+        else:
+            map[body[number].i][body[number].j] = 'p'
 
 def goUp():
     global row, col
     if checkForWall(row-1, col):
-        return 
+        return
+    if checkForBody(row-1, col):
+        return
     row = row - 1
     print("up        ")
     checkForFood(row, col)
     move(row, col)
     # map[i-1][j] = 'p'
+    time.sleep(0.1)
     return
 
 
@@ -150,12 +164,14 @@ def goLeft():
     global row, col
     if checkForWall(row, col-1):
         return 
-
+    if checkForBody(row, col-1):
+        return
     col = col - 1
     print("left      ")
     checkForFood(row, col)
     move(row, col)
     # map[i][j-1] = 'p'
+    time.sleep(0.1)
     return
 
 
@@ -163,25 +179,29 @@ def goDown():
     global row, col
     if checkForWall(row+1, col):
         return
-
+    if checkForBody(row+1, col):
+        return
     row = row + 1
     print("down      ")
     checkForFood(row, col)
     move(row, col)
     # map[i+1][j] = 'p'
+    time.sleep(0.1)
     return
 
 
 def goRight():
     global row, col
-    if checkForWall(row, col + 1):
+    if checkForWall(row, col+1):
         return
-
+    if checkForBody(row, col+1):
+        return
     col = col + 1
     print("right     ")
     checkForFood(row, col)
     move(row, col)
     # map[i][j+1] = 'p'
+    time.sleep(0.1)
     return
 
 
