@@ -1,9 +1,12 @@
-import getch
+import random
+import time
 
 
-SIZE = 10
+SIZE = 20
 
 map = [[0 for i in range(SIZE)] for j in range(SIZE)]
+
+choises = ['a', 'w', 's', 'd']
 
 def setBorder():
     for i in range(SIZE):
@@ -17,6 +20,7 @@ def setBorder():
 
 
 def printMap():
+    print("\033[0;0H")
     for i in range(SIZE):
         for j in range(SIZE):
             if map[i][j] == 'p':
@@ -34,7 +38,9 @@ def movePlayer(i, j):
     win = False
 
     while True:
-        get_key = getch.getch()
+        time.sleep(0.5)
+        printMap()
+        get_key = choises[random.randint(0,3)]
         switcher = {
             'w': goUp,
             'a': goLeft,
@@ -42,25 +48,57 @@ def movePlayer(i, j):
             'd': goRight,
         }
         try:
-            # while kbhit()       -------------->     khoob chon fahmidam kbhit() baraye windows o linux fargh dare, kolln bikhialesh shodam :(
-            switcher[get_key](i, j)
+           switcher[get_key](i, j)
         except:
             print("invalid input")
 
+# False mean there was no wall
+def checkForWall(i, j):
+    if map[i][j] == '#':
+        print("wall ")
+        return True
+    return False
+    
+    
 def goUp(i, j):
-    print("up")
+    if checkForWall(i-1, j):
+        movePlayer(i, j)
+        
+    print("up   ")
+    map[i][j] = ' '
+    map[i-1][j] = 'p'
+    movePlayer(i-1, j)
+
 
 def goLeft(i, j):
-    print("left")
+    if checkForWall(i, j-1):
+        movePlayer(i, j)
+        
+    print("left ")
+    map[i][j] = ' '
+    map[i][j-1] = 'p'
+    movePlayer(i, j-1)
+
 
 def goDown(i , j):
-    print("down")
+    if checkForWall(i+1, j):
+        movePlayer(i, j)
+        
+    print("down ")
+    map[i][j] = ' '
+    map[i+1][j] = 'p'
+    movePlayer(i+1, j)
+
 
 def goRight(i, j):
+    if checkForWall(i, j+1):
+        movePlayer(i, j)
+        
     print("right")
-
+    map[i][j] = ' '
+    map[i][j+1] = 'p'
+    movePlayer(i, j+1)
+    
 setBorder()
 setPlayer(4, 3)
-
-
 
