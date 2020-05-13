@@ -1,5 +1,6 @@
 import random
 import time
+import os
 
 class Player:
     def __init__(self, i, j):
@@ -19,6 +20,7 @@ body = []
 
 choises = ['a', 'w', 's', 'd']
 
+
 def setBorder():
     global map
     for i in range(SIZE):
@@ -28,11 +30,11 @@ def setBorder():
             else:
                 map[i][j] = ' '
 
-            # print("map[" + str(i) + "][" + str(j) + "]: " + map[i][j])
-
 
 def printMap():
-    # print("\033[0;0H")
+    # os.system('cls')  # on Windows System
+    os.system('clear') #on Linux System
+
     for i in range(SIZE):
         for j in range(SIZE):
             if map[i][j] == 'p':
@@ -55,13 +57,9 @@ def startGame(i, j):
     printMap()
     movePlayer()
 
-# f = 0
 def movePlayer():
-    # win = False
-    # global f
     global last_key, score
     while True:
-        # time.sleep(0.1)
         printMap()
         get_key = choises[random.randint(0, 3)]
         while (last_key == 'w' and get_key == 's') or (last_key == 'a' and get_key == 'd') or \
@@ -77,38 +75,24 @@ def movePlayer():
             's': goDown,
             'd': goRight,
         }
-        # f = f + 1
-        # for s in range(len(body)):
-        #     print(body[s].i, body[s].j, "        ")
-        #     time.sleep(10.5)
         switcher[get_key]()
-        # try:
-        #     # print(f)
-        #     # if f == 5 :
-        #     for s in range(len(body)):
-        #         print(body[s].i, body[s].j, "        ")
-        #     #     time.sleep(10.5)
-        #     switcher[get_key](i, j)
-        # except:
-        #     print("invalid input")
 
 # False mean there was no wall
 def checkForWall(i, j):
     if map[i][j] == '#':
-        print("wall      ")
+        print("wall")
         return True
     return False
 
 def checkForBody(i, j):
     if map[i][j] == 'p':
-        print("body      ")
+        print("body")
         return True
     return False
 
 def checkForFood(i, j):
     global score
     if map[i][j] == '*':
-        # print("food      ")
         score = score + 1
         setFood()
 
@@ -124,8 +108,6 @@ def setFood():
 def move(i, j):
     global temp_score, score
 
-    # print("tmp_scr: ", temp_score)
-    # print("score: ", score, "  ")
     if temp_score == score:
         body.reverse()
         body.pop()
@@ -155,7 +137,6 @@ def goUp():
     print("up        ")
     checkForFood(row, col)
     move(row, col)
-    # map[i-1][j] = 'p'
     time.sleep(0.1)
     return
 
@@ -167,10 +148,9 @@ def goLeft():
     if checkForBody(row, col-1):
         return
     col = col - 1
-    print("left      ")
+    print("left")
     checkForFood(row, col)
     move(row, col)
-    # map[i][j-1] = 'p'
     time.sleep(0.1)
     return
 
@@ -182,10 +162,9 @@ def goDown():
     if checkForBody(row+1, col):
         return
     row = row + 1
-    print("down      ")
+    print("down")
     checkForFood(row, col)
     move(row, col)
-    # map[i+1][j] = 'p'
     time.sleep(0.1)
     return
 
@@ -197,10 +176,9 @@ def goRight():
     if checkForBody(row, col+1):
         return
     col = col + 1
-    print("right     ")
+    print("right")
     checkForFood(row, col)
     move(row, col)
-    # map[i][j+1] = 'p'
     time.sleep(0.1)
     return
 
