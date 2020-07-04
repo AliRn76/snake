@@ -120,16 +120,16 @@ def a_star(_row, _col):
         print("OK ITS DONE")
         return
     else:
+        # Pop The Head cause we used it
         paths.reverse()
         paths.pop()
-        paths.reverse()
         print("new_row: " + str(new_row))
         print("new_col: " + str(new_col))
         map[new_row][new_col] = '.'
         printMap()
         # paths.reverse()
-        print(paths)
-        time.sleep(0.5)
+        # print(paths)
+        # time.sleep(0.1)
         return a_star(new_row, new_col)
 
 
@@ -149,12 +149,14 @@ def movePlayer():
         paths.clear()
         find_path()
         # time.sleep(1.5)
-        get_key = input()
+        # get_key = input()
 
-        # get_key = choises[random.randint(0, 3)]
-        # while (last_key == 'w' and get_key == 's') or (last_key == 'a' and get_key == 'd') or \
-        #         (last_key == 's' and get_key == 'w') or (last_key == 'd' and get_key == 'a'):
-        #     get_key = choises[random.randint(0, 3)]
+        get_key = choises[random.randint(0, 3)]
+        while (last_key == 'w' and get_key == 's') or (last_key == 'a' and get_key == 'd') or \
+                (last_key == 's' and get_key == 'w') or (last_key == 'd' and get_key == 'a'):
+            get_key = choises[random.randint(0, 3)]
+
+
         print("last_key: ", last_key)
         print("get_key: ", get_key)
         print("score: ", score)
@@ -166,6 +168,10 @@ def movePlayer():
             'd': goRight,
         }
         switcher[get_key]()
+        for i in range(SIZE):
+            for j in range(SIZE):
+                if  map[i][j] == '.':
+                    map[i][j] = ' '
 
 
 def checkForWall(i, j):
@@ -218,7 +224,7 @@ def move(_row, _col):
     # Clear The Map
     for i in range(SIZE):
         for j in range(SIZE):
-            if map[i][j] == 'p' or map[i][j] == 'P' or map[i][j] == '.':
+            if map[i][j] == 'p' or map[i][j] == 'P':
                 map[i][j] = ' '
 
     # The Lenght Of Snake Is Equel To Score , So Set The Body In Map With Help Of Score
