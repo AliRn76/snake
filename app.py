@@ -161,8 +161,8 @@ def movePlayer():
             get_key = choises[random.randint(0, 3)]
 
 
-        print("last_key: ", last_key)
-        print("get_key: ", get_key)
+        # print("last_key: ", last_key)
+        # print("get_key: ", get_key)
         print("score: ", score)
         last_key = get_key
         switcher = {
@@ -180,7 +180,7 @@ def movePlayer():
 
 def checkForWall(i, j):
     if map[i][j] == '#':
-        print("wall")
+        # print("wall")
         return True
     # False mean there was no wall
     return False
@@ -188,7 +188,7 @@ def checkForWall(i, j):
 
 def checkForBody(i, j):
     if map[i][j] == 'p':
-        print("body")
+        # print("body")
         return True
     return False
 
@@ -251,7 +251,7 @@ def goUp():
         return
     # Set New Row For Head Of Body
     row = row - 1
-    print("up        ")
+    # print("up        ")
     # Check For Food In New Position
     checkForFood(row, col)
     # Move The Body
@@ -267,7 +267,7 @@ def goLeft():
     if checkForBody(row, col-1):
         return
     col = col - 1
-    print("left")
+    # print("left")
     checkForFood(row, col)
     move(row, col)
     time.sleep(0.1)
@@ -281,7 +281,7 @@ def goDown():
     if checkForBody(row+1, col):
         return
     row = row + 1
-    print("down")
+    # print("down")
     checkForFood(row, col)
     move(row, col)
     time.sleep(0.1)
@@ -295,7 +295,7 @@ def goRight():
     if checkForBody(row, col+1):
         return
     col = col + 1
-    print("right")
+    # print("right")
     checkForFood(row, col)
     move(row, col)
     time.sleep(0.1)
