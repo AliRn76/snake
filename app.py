@@ -22,8 +22,9 @@ SIZE = 18   # Size Of The Map
 score = 1   # Score --> Lenght Of Body
 
 choises = ['a', 'w', 's', 'd']
-map = [[0 for i in range(SIZE)] for j in range(SIZE)]
+map = [['0' for i in range(SIZE)] for j in range(SIZE)]
 paths = []
+closed_path = []
 
 
 
@@ -39,7 +40,7 @@ def setBorder():
 
 def printMap():
     # os.system('cls')  # on Windows System
-    os.system('clear') #on Linux System
+    os.system('clear') # on Linux System
 
     for i in range(SIZE):
         for j in range(SIZE):
@@ -49,6 +50,8 @@ def printMap():
                 print('O', end=' ')
             elif map[i][j] == '*':
                 print('*', end=' ')
+            elif map[i][j] == '.':
+                print('.', end=' ')
             else:
                 print(map[i][j], end=' ')
         print()
@@ -68,13 +71,13 @@ def startGame(i, j):
 
 
 
-'''
+# '''
 # Calc The h_Cost
 def calc_h_cost(_row, _col):
     global food_i, food_j
     h_row = abs(food_i - _row)
     h_col = abs(food_j - _col)
-    h_cost = math.sqrt((h_row ** 2) + (h_col ** 2))
+    h_cost = h_row + h_col
     return h_cost
 
 # Calc The g_Cost
@@ -82,39 +85,51 @@ def calc_g_cost(_row, _col):
     global row, col
     g_row = abs(_row - row)
     g_col = abs(_col - col)
-    g_cost = math.sqrt((g_row ** 2) + (g_col ** 2))
+    g_cost = g_row + g_col
     return g_cost
 
 # Calc The f_Cost
 def calc_f_cost(_row, _col):
-    f_cost = calc_h_cost(_row, _col) + calc_g_cost(_row, _col)
+    f_cost = 2 * calc_h_cost(_row, _col) + calc_g_cost(_row, _col)
     return f_cost
 
 def a_star(_row, _col):
+    global map
     # All The Possible Ways For Next Move
-    states = [(-1, -1), (-1, 0), (-1, 1),\
-              (0, -1), (0, 1),\
-              (1, -1), (1, 0), (1, 1)]
-    # Check For Wall and Body For Next Move
+    states = [(-1, 0),
+              (0, -1), (0, 1),
+              (1, 0)]
+    # Check For Wall and Body For Next Move, We Have 8 Possible Move
     for _ in range(len(states)):
         new_row = _row + (states[_][0])
         new_col = _col + (states[_][1])
-        if map[new_row][new_col] != 'p' and map[new_row][new_col] != '#':
+        if map[new_row][new_col] != 'p' and map[new_row][new_col] != '#' and map[new_row][new_col] != '.' and map[new_row][new_col]  != '*':
             # Append The F_Cost, Row, Col In paths
+            print(calc_f_cost(new_row, new_col))
             f_and_pos = calc_f_cost(new_row, new_col), new_row, new_col
             paths.append(f_and_pos)
         else:
             continue
     # Sort The Array of Costs
     paths.sort(key=operator.itemgetter(0))
+    new_row = paths[0][1]
+    new_col = paths[0][2]
+    # print(paths)
     print("Min F and Its Pos: " + str(paths[0]))
-    if paths[0][0] < 2:
+    if calc_h_cost(new_row, new_col) == 1:
+        print("OK ITS DONE")
         return
     else:
-        new_row = paths[0][1]
-        new_col = paths[0][2]
+        paths.reverse()
+        paths.pop()
+        paths.reverse()
         print("new_row: " + str(new_row))
         print("new_col: " + str(new_col))
+        map[new_row][new_col] = '.'
+        printMap()
+        # paths.reverse()
+        print(paths)
+        time.sleep(0.5)
         return a_star(new_row, new_col)
 
 
@@ -123,7 +138,7 @@ def a_star(_row, _col):
 def find_path():
     global food_i, food_j, row, col
     a_star(row, col)
-'''
+# '''
 
 
 
@@ -132,12 +147,14 @@ def movePlayer():
     while True:
         printMap()
         paths.clear()
-        # find_path()
+        find_path()
         # time.sleep(1.5)
-        get_key = choises[random.randint(0, 3)]
-        while (last_key == 'w' and get_key == 's') or (last_key == 'a' and get_key == 'd') or \
-                (last_key == 's' and get_key == 'w') or (last_key == 'd' and get_key == 'a'):
-            get_key = choises[random.randint(0, 3)]
+        get_key = input()
+
+        # get_key = choises[random.randint(0, 3)]
+        # while (last_key == 'w' and get_key == 's') or (last_key == 'a' and get_key == 'd') or \
+        #         (last_key == 's' and get_key == 'w') or (last_key == 'd' and get_key == 'a'):
+        #     get_key = choises[random.randint(0, 3)]
         print("last_key: ", last_key)
         print("get_key: ", get_key)
         print("score: ", score)
@@ -150,12 +167,14 @@ def movePlayer():
         }
         switcher[get_key]()
 
-# False mean there was no wall
+
 def checkForWall(i, j):
     if map[i][j] == '#':
         print("wall")
         return True
+    # False mean there was no wall
     return False
+
 
 def checkForBody(i, j):
     if map[i][j] == 'p':
@@ -163,11 +182,13 @@ def checkForBody(i, j):
         return True
     return False
 
+
 def checkForFood(i, j):
     global score, map
     if map[i][j] == '*':
         score = score + 1
         setFood()
+
 
 def setFood():
     global food_i, food_j, map
@@ -178,7 +199,7 @@ def setFood():
         rand_j = random.randint(1, SIZE - 1)
     food_i = rand_i
     food_j = rand_j
-    map[rand_i][rand_j] = '*'
+    map[food_i][food_j] = '*'
 
 
 def move(_row, _col):
@@ -197,7 +218,7 @@ def move(_row, _col):
     # Clear The Map
     for i in range(SIZE):
         for j in range(SIZE):
-            if map[i][j] == 'p' or map[i][j] == 'P':
+            if map[i][j] == 'p' or map[i][j] == 'P' or map[i][j] == '.':
                 map[i][j] = ' '
 
     # The Lenght Of Snake Is Equel To Score , So Set The Body In Map With Help Of Score
