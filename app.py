@@ -105,7 +105,7 @@ def a_star(_row, _col):
         new_col = _col + (states[_][1])
         if map[new_row][new_col] != 'p' and map[new_row][new_col] != '#' and map[new_row][new_col] != '.' and map[new_row][new_col]  != '*':
             # Append The F_Cost, Row, Col In paths
-            print(calc_f_cost(new_row, new_col))
+            # print(calc_f_cost(new_row, new_col))
             f_and_pos = calc_f_cost(new_row, new_col), new_row, new_col
             paths.append(f_and_pos)
         else:
@@ -115,18 +115,22 @@ def a_star(_row, _col):
     new_row = paths[0][1]
     new_col = paths[0][2]
     # print(paths)
-    print("Min F and Its Pos: " + str(paths[0]))
+    # print("Min F and Its Pos: " + str(paths[0]))
     if calc_h_cost(new_row, new_col) == 1:
-        print("OK ITS DONE")
+        map[new_row][new_col] = '.'
+        printMap()
+        # I should build another pathfinding here , but just using the squire where has '.' in it
+
+        # print("OK ITS DONE")
         return
     else:
         # Pop The Head cause we used it
         paths.reverse()
         paths.pop()
-        print("new_row: " + str(new_row))
-        print("new_col: " + str(new_col))
+        # print("new_row: " + str(new_row))
+        # print("new_col: " + str(new_col))
         map[new_row][new_col] = '.'
-        printMap()
+        # printMap()
         # paths.reverse()
         # print(paths)
         # time.sleep(0.1)
