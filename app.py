@@ -10,15 +10,17 @@ class Player:
 
 row = 0
 col = 0
-SIZE = 18
-score = 1
-temp_score = 1
-last_key = ''
-map = [[0 for i in range(SIZE)] for j in range(SIZE)]
-
 body = []
+last_key = ''
+temp_score = 1
+food_i = 0  # Row Of The Food
+food_j = 0  # Col Of The Food
+SIZE = 18   # Size Of The Map
+score = 1   # Score --> Lenght Of Body
 
 choises = ['a', 'w', 's', 'd']
+map = [[0 for i in range(SIZE)] for j in range(SIZE)]
+
 
 
 def setBorder():
@@ -97,45 +99,60 @@ def checkForFood(i, j):
         setFood()
 
 def setFood():
+    global food_i, food_j
     rand_i = random.randint(1, SIZE-1)
     rand_j = random.randint(1, SIZE-1)
     while map[rand_i][rand_j] == '#' or map[rand_i][rand_j] == 'p':
         rand_i = random.randint(1, SIZE - 1)
         rand_j = random.randint(1, SIZE - 1)
+    food_i = rand_i
+    food_j = rand_j
     map[rand_i][rand_j] = '*'
 
 
-def move(i, j):
+def move(_row, _col):
     global temp_score, score
 
+    # Is He Ate The Food Or Not
     if temp_score == score:
         body.reverse()
         body.pop()
         body.reverse()
-        body.append(Player(i, j))
+        body.append(Player(_row, _col))
     else:
-        body.append(Player(i, j))
+        body.append(Player(_row, _col))
         temp_score = score
 
+    # Clear The Map
     for i in range(SIZE):
         for j in range(SIZE):
             if map[i][j] == 'p' or map[i][j] == 'P':
                 map[i][j] = ' '
+
+    # The Lenght Of Snake Is Equel To Score , So Set The Body In Map With Help Of Score
     for number in range(score):
+        # Set The Head
         if number == score-1:
             map[body[number].i][body[number].j] = 'P'
+        # Set The Rest Of Body
         else:
             map[body[number].i][body[number].j] = 'p'
 
+
 def goUp():
     global row, col
+    # Check For Wall
     if checkForWall(row-1, col):
         return
+    # Check For Body
     if checkForBody(row-1, col):
         return
+    # Set New Row For Head Of Body
     row = row - 1
     print("up        ")
+    # Check For Food In New Position
     checkForFood(row, col)
+    # Move The Body
     move(row, col)
     time.sleep(0.1)
     return
@@ -183,7 +200,10 @@ def goRight():
     return
 
 
+def main():
+    setBorder()
+    startGame(4, 3)
 
-setBorder()
-startGame(4, 3)
 
+if __name__ == '__main__':
+    main()
