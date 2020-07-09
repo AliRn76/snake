@@ -46,16 +46,9 @@ def printMap():
     for i in range(SIZE):
         for j in range(SIZE):
             if map[i][j] == 'p':
-                print(u"\U0001F538", end='')
+                print("o", end=' ')
             elif map[i][j] == 'P':
-                print(u"\U0001F920", end='')
-            elif map[i][j] == '*':
-                print(u"\U0001F355", end='')
-            elif map[i][j] == '#':
-                if i == 0 or i == (SIZE - 1):
-                    print(u"\u2588"u"\u2588", end='')
-                else:
-                    print(u"\u2588", end='  ')
+                print("0", end=' ')
             else:
                 print(map[i][j], end=' ')
         print()
