@@ -96,8 +96,6 @@ def calc_f_cost(_row, _col):
 def final_path(_row, _col):
     global map
     # print("\nSTART OF FINAL PATH")
-    # new_row = food_i
-    # new_col = food_j
     states = [(-1, 0),
               (0, -1), (0, 1),
               (1, 0)]
@@ -127,23 +125,22 @@ def final_path(_row, _col):
     # print("New_Row: " + str(new_row))
     # print("New_Col: " + str(new_col))
     if finalPath[0][0] == 0:
-        # print("**************")
+        # Age 'P' chasbide bood be '*'
         next_pos = food_i, food_j
         return next_pos
     if calc_g_cost(new_row, new_col) == 1:
-        map[new_row][new_col] = '$'
+        # map[new_row][new_col] = '$'
         # printMap()
         # time.sleep(300)
         # print("OK ITS DONE")
         next_pos = new_row, new_col
-        # return next_pos
         return next_pos
     else:
         # Pop The Head cause we used it
         finalPath.reverse()
         finalPath.pop()
         # time.sleep(300)
-        map[new_row][new_col] = '$'
+        # map[new_row][new_col] = '$'
         # printMap()
         # paths.reverse()
         # print(paths)
@@ -196,6 +193,7 @@ def a_star(_row, _col):
             # time.sleep(0.1)
             return a_star(new_row, new_col)
     except:
+        # In idea bayad roosh kar beshe , baraye stack overflow shodn
         # Age az oonvar error e Max Depth dad, az Invar check kone
         paths.clear()
         print("Max Depth Error")
