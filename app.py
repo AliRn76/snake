@@ -40,8 +40,8 @@ def setBorder():
 
 
 def printMap():
-    # os.system('cls')  # on Windows System
-    os.system('clear') # on Linux System
+    os.system('cls')  # on Windows System
+    # os.system('clear') # on Linux System
 
     for i in range(SIZE):
         for j in range(SIZE):
