@@ -24,6 +24,7 @@ score = 1   # Score --> Lenght Of Body
 choises = ['a', 'w', 's', 'd']
 map = [['0' for i in range(SIZE)] for j in range(SIZE)]
 paths = []
+finalPath = []
 closed_path = []
 
 
@@ -47,7 +48,7 @@ def printMap():
             if map[i][j] == 'p':
                 print('o', end=' ')
             elif map[i][j] == 'P':
-                print('O', end=' ')
+                print('0', end=' ')
             elif map[i][j] == '*':
                 print('*', end=' ')
             elif map[i][j] == '.':
@@ -55,6 +56,7 @@ def printMap():
             else:
                 print(map[i][j], end=' ')
         print()
+
 
 def startGame(i, j):
     global row, col, food_i, food_j
@@ -70,9 +72,6 @@ def startGame(i, j):
     movePlayer()
 
 
-
-# '''
-# Calc The h_Cost
 def calc_h_cost(_row, _col):
     global food_i, food_j
     h_row = abs(food_i - _row)
@@ -80,7 +79,7 @@ def calc_h_cost(_row, _col):
     h_cost = h_row + h_col
     return h_cost
 
-# Calc The g_Cost
+
 def calc_g_cost(_row, _col):
     global row, col
     g_row = abs(_row - row)
@@ -88,82 +87,212 @@ def calc_g_cost(_row, _col):
     g_cost = g_row + g_col
     return g_cost
 
-# Calc The f_Cost
+
 def calc_f_cost(_row, _col):
     f_cost = 2 * calc_h_cost(_row, _col) + calc_g_cost(_row, _col)
     return f_cost
 
-def a_star(_row, _col):
+
+def final_path(_row, _col):
     global map
-    # All The Possible Ways For Next Move
+    # print("\nSTART OF FINAL PATH")
+    # new_row = food_i
+    # new_col = food_j
     states = [(-1, 0),
               (0, -1), (0, 1),
               (1, 0)]
-    # Check For Wall and Body For Next Move, We Have 8 Possible Move
     for _ in range(len(states)):
         new_row = _row + (states[_][0])
         new_col = _col + (states[_][1])
-        if map[new_row][new_col] != 'p' and map[new_row][new_col] != '#' and map[new_row][new_col] != '.' and map[new_row][new_col]  != '*':
-            # Append The F_Cost, Row, Col In paths
-            # print(calc_f_cost(new_row, new_col))
-            f_and_pos = calc_f_cost(new_row, new_col), new_row, new_col
-            paths.append(f_and_pos)
+        if map[new_row][new_col] == '.' or map[new_row][new_col] == 'P':
+            g_and_pos = calc_g_cost(new_row, new_col), new_row, new_col
+            # print(g_and_pos)
+            finalPath.append(g_and_pos)
         else:
             continue
     # Sort The Array of Costs
-    paths.sort(key=operator.itemgetter(0))
-    new_row = paths[0][1]
-    new_col = paths[0][2]
-    # print(paths)
-    # print("Min F and Its Pos: " + str(paths[0]))
-    if calc_h_cost(new_row, new_col) == 1:
-        map[new_row][new_col] = '.'
-        printMap()
-        # I should build another pathfinding here , but just using the squire where has '.' in it
+    # print(finalPath)
+    finalPath.sort(key=operator.itemgetter(0))
+    try:
+        new_row = finalPath[0][1]
+        new_col = finalPath[0][2]
+        # print("ITS FINE")
+        ## print(finalPath)
 
-        # print("OK ITS DONE")
+    except:
+        # print("** ITS BUG")
+        # print("NEW ROW: " + str(new_row))
+        # print("NEW COL: " + str(new_col))
         return
+    # print("New_Row: " + str(new_row))
+    # print("New_Col: " + str(new_col))
+    if finalPath[0][0] == 0:
+        # print("**************")
+        next_pos = food_i, food_j
+        return next_pos
+    if calc_g_cost(new_row, new_col) == 1:
+        map[new_row][new_col] = '$'
+        # printMap()
+        # time.sleep(300)
+        # print("OK ITS DONE")
+        next_pos = new_row, new_col
+        # return next_pos
+        return next_pos
     else:
         # Pop The Head cause we used it
-        paths.reverse()
-        paths.pop()
-        # print("new_row: " + str(new_row))
-        # print("new_col: " + str(new_col))
-        map[new_row][new_col] = '.'
+        finalPath.reverse()
+        finalPath.pop()
+        # time.sleep(300)
+        map[new_row][new_col] = '$'
         # printMap()
         # paths.reverse()
         # print(paths)
         # time.sleep(0.1)
-        return a_star(new_row, new_col)
+        return final_path(new_row, new_col)
 
+
+
+def a_star(_row, _col):
+    global map
+    # All The Possible Ways For Next Move
+    try:
+        states = [(-1, 0),
+                  (0, -1), (0, 1),
+                  (1, 0)]
+        # Check For Wall and Body For Next Move, We Have 4 Possible Move
+        for _ in range(len(states)):
+            new_row = _row + (states[_][0])
+            new_col = _col + (states[_][1])
+            if map[new_row][new_col] != 'p' and map[new_row][new_col] != '#' and map[new_row][new_col] != '.' and map[new_row][new_col]  != '*' and map[new_row][new_col] != 'P':
+                # Append The F_Cost, Row, Col In paths
+                # print(calc_f_cost(new_row, new_col))
+                f_and_pos = calc_f_cost(new_row, new_col), new_row, new_col
+                paths.append(f_and_pos)
+            else:
+                continue
+        # Sort The Array of Costs
+        paths.sort(key=operator.itemgetter(0))
+        new_row = paths[0][1]
+        new_col = paths[0][2]
+        # print(paths)
+        # print("Min F and Its Pos: " + str(paths[0]))
+        if calc_h_cost(new_row, new_col) == 1:
+            map[new_row][new_col] = '.'
+            # printMap()
+            # I should build another pathfinding here , but just using the squire where has '.' in it
+
+            # print("OK ITS DONE")
+            return
+        else:
+            # Pop The Head cause we used it
+            paths.reverse()
+            paths.pop()
+            # print("new_row: " + str(new_row))
+            # print("new_col: " + str(new_col))
+            map[new_row][new_col] = '.'
+            # printMap()
+            # paths.reverse()
+            # print(paths)
+            # time.sleep(0.1)
+            return a_star(new_row, new_col)
+    except:
+        # Age az oonvar error e Max Depth dad, az Invar check kone
+        paths.clear()
+        print("Max Depth Error")
+        states = [(1, 0), (0, 1), (0, -1), (-1, 0)]
+        # Check For Wall and Body For Next Move, We Have 4 Possible Move
+        for _ in range(len(states)):
+            new_row = _row + (states[_][0])
+            new_col = _col + (states[_][1])
+            if map[new_row][new_col] != 'p' and map[new_row][new_col] != '#' and map[new_row][new_col] != '.' and \
+                    map[new_row][new_col] != '*' and map[new_row][new_col] != 'P':
+                # Append The F_Cost, Row, Col In paths
+                # print(calc_f_cost(new_row, new_col))
+                f_and_pos = calc_f_cost(new_row, new_col), new_row, new_col
+                paths.append(f_and_pos)
+            else:
+                continue
+        # Sort The Array of Costs
+        paths.sort(key=operator.itemgetter(0))
+        new_row = paths[0][1]
+        new_col = paths[0][2]
+        # print(paths)
+        # print("Min F and Its Pos: " + str(paths[0]))
+        if calc_h_cost(new_row, new_col) == 1:
+            map[new_row][new_col] = '.'
+            # printMap()
+            # I should build another pathfinding here , but just using the squire where has '.' in it
+
+            # print("OK ITS DONE")
+            return
+        else:
+            # Pop The Head cause we used it
+            paths.reverse()
+            paths.pop()
+            # print("new_row: " + str(new_row))
+            # print("new_col: " + str(new_col))
+            map[new_row][new_col] = '.'
+            # printMap()
+            # paths.reverse()
+            # print(paths)
+            # time.sleep(0.1)
+            return a_star(new_row, new_col)
 
 
 
 def find_path():
     global food_i, food_j, row, col
+    paths.clear()
+    finalPath.clear()
     a_star(row, col)
-# '''
+    next_pos = final_path(food_i, food_j)
+    # next_pos = final_path()
+    # print(next_pos)
+    return next_pos
 
 
+    # print(next_pos)
 
 def movePlayer():
-    global last_key, score
+    global last_key, score, row, col
     while True:
         printMap()
-        paths.clear()
-        find_path()
-        # time.sleep(1.5)
+        print("Score: ", score)
+
+        try:
+            # print("TRY")
+            ### GET KEY WITH AI
+            next_pos = find_path()
+            new_row = next_pos[0]
+            new_col = next_pos[1]
+            # print("NEXT POS: ")
+            # print(row, col)
+            # print(new_row, new_col)
+            if new_row > row:
+                print("Down")
+                get_key = 's'
+            elif new_row < row:
+                print("Up")
+                get_key = 'w'
+            elif new_col > col:
+                print("Right")
+                get_key = 'd'
+            else:
+                print("Left")
+                get_key = 'a'
+            time.sleep(0.01)
+        except:
+            ### GET KEY RANDOMLY
+            print("Use Random Choise")
+            get_key = choises[random.randint(0, 3)]
+            while (last_key == 'w' and get_key == 's') or (last_key == 'a' and get_key == 'd') or \
+                    (last_key == 's' and get_key == 'w') or (last_key == 'd' and get_key == 'a'):
+                get_key = choises[random.randint(0, 3)]
+
+        ### GET KEY MANUAL
         # get_key = input()
 
-        get_key = choises[random.randint(0, 3)]
-        while (last_key == 'w' and get_key == 's') or (last_key == 'a' and get_key == 'd') or \
-                (last_key == 's' and get_key == 'w') or (last_key == 'd' and get_key == 'a'):
-            get_key = choises[random.randint(0, 3)]
 
-
-        # print("last_key: ", last_key)
-        # print("get_key: ", get_key)
-        print("score: ", score)
         last_key = get_key
         switcher = {
             'w': goUp,
@@ -174,7 +303,7 @@ def movePlayer():
         switcher[get_key]()
         for i in range(SIZE):
             for j in range(SIZE):
-                if  map[i][j] == '.':
+                if  map[i][j] == '.' or map[i][j] == '$':
                     map[i][j] = ' '
 
 
@@ -309,3 +438,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# I have to fix the corner bug , I think that the Ali's idea was good for it
