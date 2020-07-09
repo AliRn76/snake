@@ -18,7 +18,7 @@ last_key = ''
 temp_score = 1
 food_i = 0  # Row Of The Food
 food_j = 0  # Col Of The Food
-SIZE = 18   # Size Of The Map
+SIZE = 20   # Size Of The Map
 score = 1   # Score --> Lenght Of Body
 
 choises = ['a', 'w', 's', 'd']
@@ -46,13 +46,16 @@ def printMap():
     for i in range(SIZE):
         for j in range(SIZE):
             if map[i][j] == 'p':
-                print('o', end=' ')
+                print(u"\U0001F538", end='')
             elif map[i][j] == 'P':
-                print('0', end=' ')
+                print(u"\U0001F920", end='')
             elif map[i][j] == '*':
-                print('*', end=' ')
-            elif map[i][j] == '.':
-                print('.', end=' ')
+                print(u"\U0001F355", end='')
+            elif map[i][j] == '#':
+                if i == 0 or i == (SIZE - 1):
+                    print(u"\u2588"u"\u2588", end='')
+                else:
+                    print(u"\u2588", end='  ')
             else:
                 print(map[i][j], end=' ')
         print()
@@ -95,61 +98,45 @@ def calc_f_cost(_row, _col):
 
 def final_path(_row, _col):
     global map
-    # print("\nSTART OF FINAL PATH")
-    # new_row = food_i
-    # new_col = food_j
     states = [(-1, 0),
               (0, -1), (0, 1),
               (1, 0)]
+
     for _ in range(len(states)):
         new_row = _row + (states[_][0])
         new_col = _col + (states[_][1])
         if map[new_row][new_col] == '.' or map[new_row][new_col] == 'P':
             g_and_pos = calc_g_cost(new_row, new_col), new_row, new_col
-            # print(g_and_pos)
             finalPath.append(g_and_pos)
         else:
             continue
+
     # Sort The Array of Costs
-    # print(finalPath)
     finalPath.sort(key=operator.itemgetter(0))
+
     try:
         new_row = finalPath[0][1]
         new_col = finalPath[0][2]
-        # print("ITS FINE")
-        ## print(finalPath)
 
     except:
-        # print("** ITS BUG")
-        # print("NEW ROW: " + str(new_row))
-        # print("NEW COL: " + str(new_col))
+        # Just for Safety :)
         return
-    # print("New_Row: " + str(new_row))
-    # print("New_Col: " + str(new_col))
+
     if finalPath[0][0] == 0:
-        # print("**************")
+        # If H_cost(g_cost of food with head) of Snake == 0
         next_pos = food_i, food_j
         return next_pos
+
     if calc_g_cost(new_row, new_col) == 1:
         map[new_row][new_col] = '$'
-        # printMap()
-        # time.sleep(300)
-        # print("OK ITS DONE")
         next_pos = new_row, new_col
-        # return next_pos
         return next_pos
+
     else:
         # Pop The Head cause we used it
         finalPath.reverse()
         finalPath.pop()
-        # time.sleep(300)
-        map[new_row][new_col] = '$'
-        # printMap()
-        # paths.reverse()
-        # print(paths)
-        # time.sleep(0.1)
         return final_path(new_row, new_col)
-
 
 
 def a_star(_row, _col):
@@ -159,42 +146,37 @@ def a_star(_row, _col):
         states = [(-1, 0),
                   (0, -1), (0, 1),
                   (1, 0)]
+
         # Check For Wall and Body For Next Move, We Have 4 Possible Move
         for _ in range(len(states)):
             new_row = _row + (states[_][0])
             new_col = _col + (states[_][1])
-            if map[new_row][new_col] != 'p' and map[new_row][new_col] != '#' and map[new_row][new_col] != '.' and map[new_row][new_col]  != '*' and map[new_row][new_col] != 'P':
-                # Append The F_Cost, Row, Col In paths
-                # print(calc_f_cost(new_row, new_col))
+
+            if map[new_row][new_col] != 'p' and map[new_row][new_col] != '#' and map[new_row][new_col] != '.' \
+                    and map[new_row][new_col] != '*' and map[new_row][new_col] != 'P':
                 f_and_pos = calc_f_cost(new_row, new_col), new_row, new_col
                 paths.append(f_and_pos)
+
             else:
                 continue
+
         # Sort The Array of Costs
         paths.sort(key=operator.itemgetter(0))
         new_row = paths[0][1]
         new_col = paths[0][2]
-        # print(paths)
-        # print("Min F and Its Pos: " + str(paths[0]))
+
         if calc_h_cost(new_row, new_col) == 1:
             map[new_row][new_col] = '.'
-            # printMap()
-            # I should build another pathfinding here , but just using the squire where has '.' in it
-
-            # print("OK ITS DONE")
+            # This Func just set the '.' in map , and we will use it for pathfinding
             return
+
         else:
             # Pop The Head cause we used it
             paths.reverse()
             paths.pop()
-            # print("new_row: " + str(new_row))
-            # print("new_col: " + str(new_col))
             map[new_row][new_col] = '.'
-            # printMap()
-            # paths.reverse()
-            # print(paths)
-            # time.sleep(0.1)
             return a_star(new_row, new_col)
+
     except:
         # Age az oonvar error e Max Depth dad, az Invar check kone
         paths.clear()
@@ -204,38 +186,30 @@ def a_star(_row, _col):
         for _ in range(len(states)):
             new_row = _row + (states[_][0])
             new_col = _col + (states[_][1])
+
             if map[new_row][new_col] != 'p' and map[new_row][new_col] != '#' and map[new_row][new_col] != '.' and \
                     map[new_row][new_col] != '*' and map[new_row][new_col] != 'P':
-                # Append The F_Cost, Row, Col In paths
-                # print(calc_f_cost(new_row, new_col))
                 f_and_pos = calc_f_cost(new_row, new_col), new_row, new_col
                 paths.append(f_and_pos)
+
             else:
                 continue
+
         # Sort The Array of Costs
         paths.sort(key=operator.itemgetter(0))
         new_row = paths[0][1]
         new_col = paths[0][2]
-        # print(paths)
-        # print("Min F and Its Pos: " + str(paths[0]))
+
         if calc_h_cost(new_row, new_col) == 1:
             map[new_row][new_col] = '.'
-            # printMap()
-            # I should build another pathfinding here , but just using the squire where has '.' in it
-
-            # print("OK ITS DONE")
+            # This Func just set the '.' in map , and we will use it for pathfinding
             return
+
         else:
             # Pop The Head cause we used it
             paths.reverse()
             paths.pop()
-            # print("new_row: " + str(new_row))
-            # print("new_col: " + str(new_col))
             map[new_row][new_col] = '.'
-            # printMap()
-            # paths.reverse()
-            # print(paths)
-            # time.sleep(0.1)
             return a_star(new_row, new_col)
 
 
@@ -246,12 +220,8 @@ def find_path():
     finalPath.clear()
     a_star(row, col)
     next_pos = final_path(food_i, food_j)
-    # next_pos = final_path()
-    # print(next_pos)
     return next_pos
 
-
-    # print(next_pos)
 
 def movePlayer():
     global last_key, score, row, col
@@ -260,14 +230,10 @@ def movePlayer():
         print("Score: ", score)
 
         try:
-            # print("TRY")
-            ### GET KEY WITH AI
+    ### GET KEY WITH AI
             next_pos = find_path()
             new_row = next_pos[0]
             new_col = next_pos[1]
-            # print("NEXT POS: ")
-            # print(row, col)
-            # print(new_row, new_col)
             if new_row > row:
                 print("Down")
                 get_key = 's'
@@ -280,16 +246,18 @@ def movePlayer():
             else:
                 print("Left")
                 get_key = 'a'
-            time.sleep(0.01)
+            time.sleep(0.2)
+
         except:
-            ### GET KEY RANDOMLY
+    ### GET KEY RANDOMLY
+            # IF AI Couldnt Find the path to food, we use random choise
             print("Use Random Choise")
             get_key = choises[random.randint(0, 3)]
             while (last_key == 'w' and get_key == 's') or (last_key == 'a' and get_key == 'd') or \
                     (last_key == 's' and get_key == 'w') or (last_key == 'd' and get_key == 'a'):
                 get_key = choises[random.randint(0, 3)]
-
-        ### GET KEY MANUAL
+            time.sleep(0.2)
+    ### GET KEY MANUAL
         # get_key = input()
 
 
@@ -309,7 +277,6 @@ def movePlayer():
 
 def checkForWall(i, j):
     if map[i][j] == '#':
-        # print("wall")
         return True
     # False mean there was no wall
     return False
@@ -317,7 +284,6 @@ def checkForWall(i, j):
 
 def checkForBody(i, j):
     if map[i][j] == 'p':
-        # print("body")
         return True
     return False
 
@@ -372,20 +338,13 @@ def move(_row, _col):
 
 def goUp():
     global row, col
-    # Check For Wall
-    if checkForWall(row-1, col):
+    if checkForWall(row-1, col):  # Check For Wall
         return
-    # Check For Body
-    if checkForBody(row-1, col):
+    if checkForBody(row-1, col):  # Check For Body
         return
-    # Set New Row For Head Of Body
-    row = row - 1
-    # print("up        ")
-    # Check For Food In New Position
-    checkForFood(row, col)
-    # Move The Body
-    move(row, col)
-    time.sleep(0.1)
+    row = row - 1  # Set New Row For Head Of Body
+    checkForFood(row, col)  # Check For Food In New Position
+    move(row, col)  # Move The Body
     return
 
 
@@ -396,10 +355,8 @@ def goLeft():
     if checkForBody(row, col-1):
         return
     col = col - 1
-    # print("left")
     checkForFood(row, col)
     move(row, col)
-    time.sleep(0.1)
     return
 
 
@@ -410,10 +367,8 @@ def goDown():
     if checkForBody(row+1, col):
         return
     row = row + 1
-    # print("down")
     checkForFood(row, col)
     move(row, col)
-    time.sleep(0.1)
     return
 
 
@@ -424,10 +379,8 @@ def goRight():
     if checkForBody(row, col+1):
         return
     col = col + 1
-    # print("right")
     checkForFood(row, col)
     move(row, col)
-    time.sleep(0.1)
     return
 
 
@@ -438,5 +391,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# I have to fix the corner bug , I think that the Ali's idea was good for it
