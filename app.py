@@ -30,7 +30,7 @@ closed_path = []
 
 
 def setBorder():
-    global map
+    # global map
     for i in range(SIZE):
         for j in range(SIZE):
             if i == 0 or j == 0 or i == (SIZE-1) or j == (SIZE-1):
@@ -71,7 +71,6 @@ def startGame(i, j):
     food_j = col + 1
     map[food_i][food_j] = '*'
     body.append(Player(row, col))
-    printMap()
     movePlayer()
 
 
@@ -97,7 +96,6 @@ def calc_f_cost(_row, _col):
 
 
 def final_path(_row, _col):
-    global map
     states = [(-1, 0),
               (0, -1), (0, 1),
               (1, 0)]
@@ -140,78 +138,40 @@ def final_path(_row, _col):
 
 
 def a_star(_row, _col):
-    global map
     # All The Possible Ways For Next Move
-    try:
-        states = [(-1, 0),
-                  (0, -1), (0, 1),
-                  (1, 0)]
+    states = [(-1, 0),
+              (0, -1), (0, 1),
+              (1, 0)]
 
-        # Check For Wall and Body For Next Move, We Have 4 Possible Move
-        for _ in range(len(states)):
-            new_row = _row + (states[_][0])
-            new_col = _col + (states[_][1])
+    # Check For Wall and Body For Next Move, We Have 4 Possible Move
+    for _ in range(len(states)):
+        new_row = _row + (states[_][0])
+        new_col = _col + (states[_][1])
 
-            if map[new_row][new_col] != 'p' and map[new_row][new_col] != '#' and map[new_row][new_col] != '.' \
-                    and map[new_row][new_col] != '*' and map[new_row][new_col] != 'P':
-                f_and_pos = calc_f_cost(new_row, new_col), new_row, new_col
-                paths.append(f_and_pos)
-
-            else:
-                continue
-
-        # Sort The Array of Costs
-        paths.sort(key=operator.itemgetter(0))
-        new_row = paths[0][1]
-        new_col = paths[0][2]
-
-        if calc_h_cost(new_row, new_col) == 1:
-            map[new_row][new_col] = '.'
-            # This Func just set the '.' in map , and we will use it for pathfinding
-            return
+        if map[new_row][new_col] != 'p' and map[new_row][new_col] != '#' and map[new_row][new_col] != '.' \
+                and map[new_row][new_col] != '*' and map[new_row][new_col] != 'P':
+            f_and_pos = calc_f_cost(new_row, new_col), new_row, new_col
+            paths.append(f_and_pos)
 
         else:
-            # Pop The Head cause we used it
-            paths.reverse()
-            paths.pop()
-            map[new_row][new_col] = '.'
-            return a_star(new_row, new_col)
+            continue
 
-    except:
-        # Age az oonvar error e Max Depth dad, az Invar check kone
-        paths.clear()
-        print("Max Depth Error")
-        states = [(1, 0), (0, 1), (0, -1), (-1, 0)]
-        # Check For Wall and Body For Next Move, We Have 4 Possible Move
-        for _ in range(len(states)):
-            new_row = _row + (states[_][0])
-            new_col = _col + (states[_][1])
+    # Sort The Array of Costs
+    paths.sort(key=operator.itemgetter(0))
+    new_row = paths[0][1]
+    new_col = paths[0][2]
 
-            if map[new_row][new_col] != 'p' and map[new_row][new_col] != '#' and map[new_row][new_col] != '.' and \
-                    map[new_row][new_col] != '*' and map[new_row][new_col] != 'P':
-                f_and_pos = calc_f_cost(new_row, new_col), new_row, new_col
-                paths.append(f_and_pos)
+    if calc_h_cost(new_row, new_col) == 1:
+        map[new_row][new_col] = '.'
+        # This Func just set the '.' in map , and we will use it for pathfinding
+        return
 
-            else:
-                continue
-
-        # Sort The Array of Costs
-        paths.sort(key=operator.itemgetter(0))
-        new_row = paths[0][1]
-        new_col = paths[0][2]
-
-        if calc_h_cost(new_row, new_col) == 1:
-            map[new_row][new_col] = '.'
-            # This Func just set the '.' in map , and we will use it for pathfinding
-            return
-
-        else:
-            # Pop The Head cause we used it
-            paths.reverse()
-            paths.pop()
-            map[new_row][new_col] = '.'
-            return a_star(new_row, new_col)
-
+    else:
+        # Pop The Head cause we used it
+        paths.reverse()
+        paths.pop()
+        map[new_row][new_col] = '.'
+        return a_star(new_row, new_col)
 
 
 def find_path():
@@ -230,7 +190,7 @@ def movePlayer():
         print("Score: ", score)
 
         try:
-    ### GET KEY WITH AI
+        ### GET KEY WITH AI
             next_pos = find_path()
             new_row = next_pos[0]
             new_col = next_pos[1]
@@ -246,20 +206,19 @@ def movePlayer():
             else:
                 print("Left")
                 get_key = 'a'
-            time.sleep(0.2)
+            # time.sleep(0.05)
 
         except:
-    ### GET KEY RANDOMLY
+        ### GET KEY RANDOMLY
             # IF AI Couldnt Find the path to food, we use random choise
             print("Use Random Choise")
             get_key = choises[random.randint(0, 3)]
             while (last_key == 'w' and get_key == 's') or (last_key == 'a' and get_key == 'd') or \
                     (last_key == 's' and get_key == 'w') or (last_key == 'd' and get_key == 'a'):
                 get_key = choises[random.randint(0, 3)]
-            time.sleep(0.2)
-    ### GET KEY MANUAL
-        # get_key = input()
 
+        ### GET KEY MANUAL
+        # get_key = input()
 
         last_key = get_key
         switcher = {
@@ -308,7 +267,7 @@ def setFood():
 
 
 def move(_row, _col):
-    global temp_score, score, map
+    global temp_score, score
 
     # Is He Ate The Food Or Not
     if temp_score == score:
@@ -345,6 +304,7 @@ def goUp():
     row = row - 1  # Set New Row For Head Of Body
     checkForFood(row, col)  # Check For Food In New Position
     move(row, col)  # Move The Body
+    time.sleep(0.15)
     return
 
 
@@ -357,6 +317,7 @@ def goLeft():
     col = col - 1
     checkForFood(row, col)
     move(row, col)
+    time.sleep(0.15)
     return
 
 
@@ -369,6 +330,7 @@ def goDown():
     row = row + 1
     checkForFood(row, col)
     move(row, col)
+    time.sleep(0.15)
     return
 
 
@@ -381,6 +343,7 @@ def goRight():
     col = col + 1
     checkForFood(row, col)
     move(row, col)
+    time.sleep(0.15)
     return
 
 
