@@ -1,6 +1,8 @@
 import operator
 import random
 import time
+import sys
+import resource
 import math
 import os
 
@@ -221,7 +223,9 @@ def movePlayer():
                 get_key = 'a'
             # time.sleep(0.05)
 
-        except:
+        except Exception as e:
+            print(e)
+            time.sleep(0.2)
         ### GET KEY RANDOMLY
             # IF AI Couldnt Find the path to food, we use random choise
             print("Use Random Choise")
@@ -274,7 +278,8 @@ def setFood():
     food_i = random.randint(1, SIZE-1)
     food_j = random.randint(1, SIZE-1)
     # while map[food_i][food_j] == '#' or map[food_i][food_j] == 'p' or map[food_i][food_j] == 'P':
-    while map[food_i][food_j] == '#' or map[food_i][food_j] == 'p' or map[food_i][food_j] == 'P' or map[food_i][food_j] == '.' or map[food_i][food_j] == '^':
+    # while map[food_i][food_j] == '#' or map[food_i][food_j] == 'p' or map[food_i][food_j] == 'P' or map[food_i][food_j] == '.' or map[food_i][food_j] == '^':
+    while map[food_i][food_j] != ' ':
         food_i = random.randint(1, SIZE - 1)
         food_j = random.randint(1, SIZE - 1)
     map[food_i][food_j] = '*'
@@ -318,7 +323,7 @@ def goUp():
     row = row - 1  # Set New Row For Head Of Body
     checkForFood(row, col)  # Check For Food In New Position
     move(row, col)  # Move The Body
-    time.sleep(0.3)
+    time.sleep(0.2)
     return
 
 
@@ -331,7 +336,7 @@ def goLeft():
     col = col - 1
     checkForFood(row, col)
     move(row, col)
-    time.sleep(0.3)
+    time.sleep(0.2)
     return
 
 
@@ -344,7 +349,7 @@ def goDown():
     row = row + 1
     checkForFood(row, col)
     move(row, col)
-    time.sleep(0.3)
+    time.sleep(0.2)
     return
 
 
@@ -357,11 +362,16 @@ def goRight():
     col = col + 1
     checkForFood(row, col)
     move(row, col)
-    time.sleep(0.3)
+    time.sleep(0.2)
     return
 
 
 def main():
+    # Increase the resource and recursionLimit
+    # resource.setrlimit(resource.RLIMIT_STACK, (2 ** 29, -1))
+    resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+    sys.setrecursionlimit(10 ** 6)
+
     start()
 
 
