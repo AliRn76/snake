@@ -208,16 +208,16 @@ def movePlayer():
             new_row = next_pos[0]
             new_col = next_pos[1]
             if new_row > row:
-                print("Down")
+                # print("Down")
                 get_key = 's'
             elif new_row < row:
-                print("Up")
+                # print("Up")
                 get_key = 'w'
             elif new_col > col:
-                print("Right")
+                # print("Right")
                 get_key = 'd'
             else:
-                print("Left")
+                # print("Left")
                 get_key = 'a'
             # time.sleep(0.05)
 
@@ -318,7 +318,7 @@ def goUp():
     row = row - 1  # Set New Row For Head Of Body
     checkForFood(row, col)  # Check For Food In New Position
     move(row, col)  # Move The Body
-    time.sleep(0.19)
+    time.sleep(0.3)
     return
 
 
@@ -331,7 +331,7 @@ def goLeft():
     col = col - 1
     checkForFood(row, col)
     move(row, col)
-    time.sleep(0.19)
+    time.sleep(0.3)
     return
 
 
@@ -344,7 +344,7 @@ def goDown():
     row = row + 1
     checkForFood(row, col)
     move(row, col)
-    time.sleep(0.19)
+    time.sleep(0.3)
     return
 
 
@@ -357,7 +357,7 @@ def goRight():
     col = col + 1
     checkForFood(row, col)
     move(row, col)
-    time.sleep(0.19)
+    time.sleep(0.3)
     return
 
 
