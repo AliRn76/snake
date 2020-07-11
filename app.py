@@ -1,5 +1,6 @@
 import operator
 import random
+import getch
 import time
 import sys
 import resource
@@ -73,7 +74,7 @@ def start():
     while map[row][col] == '#':
         row = random.randint(1, SIZE - 1)
         col = random.randint(1, SIZE - 1)
-    map[row][col] = 'p'
+    map[row][col] = 'P'
     body.append(Player(row, col))
 
     # Set The First Food
@@ -225,7 +226,8 @@ def movePlayer():
 
         except Exception as e:
             print(e)
-            time.sleep(0.2)
+            # time.sleep(0.2)
+
         ### GET KEY RANDOMLY
             # IF AI Couldnt Find the path to food, we use random choise
             print("Use Random Choise")
@@ -235,7 +237,7 @@ def movePlayer():
                 get_key = choises[random.randint(0, 3)]
 
         ### GET KEY MANUAL
-        # get_key = input()
+        # get_key = getch.getch()
 
         last_key = get_key
         switcher = {
@@ -369,11 +371,13 @@ def goRight():
 def main():
     # Increase the resource and recursionLimit
     # resource.setrlimit(resource.RLIMIT_STACK, (2 ** 29, -1))
-    resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
-    sys.setrecursionlimit(10 ** 6)
+    # resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+    sys.setrecursionlimit(10 ** 4)
 
     start()
 
 
 if __name__ == '__main__':
     main()
+
+
