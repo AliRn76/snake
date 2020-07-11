@@ -259,21 +259,19 @@ def checkForBody(i, j):
 
 
 def checkForFood(i, j):
-    global score, map
+    global score
     if map[i][j] == '*':
         score = score + 1
         setFood()
 
 
 def setFood():
-    global food_i, food_j, map
-    rand_i = random.randint(1, SIZE-1)
-    rand_j = random.randint(1, SIZE-1)
-    while map[rand_i][rand_j] == '#' or map[rand_i][rand_j] == 'p' or map[rand_i][rand_j] == 'P':
-        rand_i = random.randint(1, SIZE - 1)
-        rand_j = random.randint(1, SIZE - 1)
-    food_i = rand_i
-    food_j = rand_j
+    global food_i, food_j
+    food_i = random.randint(1, SIZE-1)
+    food_j = random.randint(1, SIZE-1)
+    while map[food_i][food_j] == '#' or map[food_i][food_j] == 'p' or map[food_i][food_j] == 'P':
+        food_i = random.randint(1, SIZE - 1)
+        food_j = random.randint(1, SIZE - 1)
     map[food_i][food_j] = '*'
 
 
@@ -296,7 +294,7 @@ def move(_row, _col):
             if map[i][j] == 'p' or map[i][j] == 'P':
                 map[i][j] = ' '
 
-    # The Lenght Of Snake Is Equel To Score , So Set The Body In Map With Help Of Score
+    # The Lenght Of Snake Is Equel To Score , So Set The Body in Map with help of Score
     for number in range(score):
         # Set The Head
         if number == score-1:
