@@ -25,12 +25,10 @@ choises = ['a', 'w', 's', 'd']
 map = [['0' for i in range(SIZE)] for j in range(SIZE)]
 paths = []
 finalPath = []
-closed_path = []
 
 
 
 def setBorder():
-    # global map
     for i in range(SIZE):
         for j in range(SIZE):
             if i == 0 or j == 0 or i == (SIZE-1) or j == (SIZE-1):
@@ -41,7 +39,7 @@ def setBorder():
 
 def printMap():
     # os.system('cls')  # on Windows System
-    os.system('clear') # on Linux System
+    os.system('clear')  # on Linux System
 
     for i in range(SIZE):
         for j in range(SIZE):
@@ -61,16 +59,30 @@ def printMap():
         print()
 
 
-def startGame(i, j):
+def start():
     global row, col, food_i, food_j
-    row = i
-    col = j
+
+    # Create Empty Map and Set The Borders (walls)
+    setBorder()
+
+    # Set The Head of Snake
+    row = random.randint(1, SIZE - 1)
+    col = random.randint(1, SIZE - 1)
+    while map[row][col] == '#':
+        row = random.randint(1, SIZE - 1)
+        col = random.randint(1, SIZE - 1)
     map[row][col] = 'p'
-    # Set The First Food
-    food_i = row + 1
-    food_j = col + 1
-    map[food_i][food_j] = '*'
     body.append(Player(row, col))
+
+    # Set The First Food
+    food_i = random.randint(1, SIZE - 1)
+    food_j = random.randint(1, SIZE - 1)
+    while map[food_i][food_j] == '#' or map[food_i][food_j] == 'P':
+        food_i = random.randint(1, SIZE - 1)
+        food_j = random.randint(1, SIZE - 1)
+    map[food_i][food_j] = '*'
+
+    # Now Start The Game
     movePlayer()
 
 
@@ -126,7 +138,6 @@ def final_path(_row, _col):
         return next_pos
 
     if calc_g_cost(new_row, new_col) == 1:
-        map[new_row][new_col] = '$'
         next_pos = new_row, new_col
         return next_pos
 
@@ -230,7 +241,7 @@ def movePlayer():
         switcher[get_key]()
         for i in range(SIZE):
             for j in range(SIZE):
-                if  map[i][j] == '.' or map[i][j] == '$':
+                if map[i][j] == '.':
                     map[i][j] = ' '
 
 
@@ -258,7 +269,7 @@ def setFood():
     global food_i, food_j, map
     rand_i = random.randint(1, SIZE-1)
     rand_j = random.randint(1, SIZE-1)
-    while map[rand_i][rand_j] == '#' or map[rand_i][rand_j] == 'p':
+    while map[rand_i][rand_j] == '#' or map[rand_i][rand_j] == 'p' or map[rand_i][rand_j] == 'P':
         rand_i = random.randint(1, SIZE - 1)
         rand_j = random.randint(1, SIZE - 1)
     food_i = rand_i
@@ -304,7 +315,7 @@ def goUp():
     row = row - 1  # Set New Row For Head Of Body
     checkForFood(row, col)  # Check For Food In New Position
     move(row, col)  # Move The Body
-    time.sleep(0.15)
+    time.sleep(0.19)
     return
 
 
@@ -317,7 +328,7 @@ def goLeft():
     col = col - 1
     checkForFood(row, col)
     move(row, col)
-    time.sleep(0.15)
+    time.sleep(0.19)
     return
 
 
@@ -330,7 +341,7 @@ def goDown():
     row = row + 1
     checkForFood(row, col)
     move(row, col)
-    time.sleep(0.15)
+    time.sleep(0.19)
     return
 
 
@@ -343,13 +354,12 @@ def goRight():
     col = col + 1
     checkForFood(row, col)
     move(row, col)
-    time.sleep(0.15)
+    time.sleep(0.19)
     return
 
 
 def main():
-    setBorder()
-    startGame(4, 3)
+    start()
 
 
 if __name__ == '__main__':
