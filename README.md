@@ -6,6 +6,7 @@
     <img src="https://img.shields.io/github/issues/AliRn76/Snake-In-Py" alt="">
   </span>
 </br>
+</br>
 
 > This snake can find food in map
 </br>
