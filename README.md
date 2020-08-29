@@ -1,5 +1,12 @@
 # Snake-In-Py
-Snake Game in python , this snake search for food itself
+  <span>
+    <img src="https://img.shields.io/github/license/AliRn76/Snake-In-Py" alt="">
+    <img style="margin-right:5" src="https://img.shields.io/github/stars/AliRn76/Snake-In-Py" alt="">
+    <img src="https://img.shields.io/github/repo-size/AliRn76/Snake-In-Py" alt="">
+    <img src="https://img.shields.io/github/issues/AliRn76/Snake-In-Py" alt="">
+  </span>
+</br>
+This snake can find food in map
 
 </br>
 <b>Windows</b>
