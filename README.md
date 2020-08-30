@@ -1,7 +1,7 @@
 # Snake-In-Py
   <span>
     <img src="https://img.shields.io/github/license/AliRn76/Snake-In-Py" alt="">
-    <img style="margin-right:5" src="https://img.shields.io/github/stars/AliRn76/Snake-In-Py" alt="">
+    <img src="https://img.shields.io/github/stars/AliRn76/Snake-In-Py" alt="">
     <img src="https://img.shields.io/github/repo-size/AliRn76/Snake-In-Py" alt="">
     <img src="https://img.shields.io/github/issues/AliRn76/Snake-In-Py" alt="">
   </span>
