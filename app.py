@@ -26,20 +26,22 @@ map = [['0' for i in range(SIZE)] for j in range(SIZE)]
 paths = []
 finalPath = []
 
-
-
 def setBorder():
-    for i in range(SIZE):
-        for j in range(SIZE):
-            if i == 0 or j == 0 or i == (SIZE-1) or j == (SIZE-1):
-                map[i][j] = '#'
-            else:
-                map[i][j] = ' '
+    global map
+    map = [['#' if i == 0 or j == 0 or i == (SIZE-1) or j == (SIZE-1) else ' ' for i in range(SIZE)] for j in range(SIZE)]
+#     for i in range(SIZE):
+#         for j in range(SIZE):
+#             if i == 0 or j == 0 or i == (SIZE-1) or j == (SIZE-1):
+#                 map[i][j] = '#'
+#             else:
+#                 map[i][j] = ' '
 
 
 def printMap():
     # os.system('cls')  # on Windows System
     os.system('clear')  # on Linux System
+
+    # [[print(u"\U0001F538", end='') if map[i][j] == 'p' else print(u"\U0001F920", end='') if map[i][j] == 'P' else print(u"\U0001F355", end='') if map[i][j] == '*' else print(u"\u2588"u"\u2588", end='') if i == 0 or i == (SIZE - 1) else print(u"\u2588", end='  ') if map[i][j] == '#' else print(map[i][j], end=' ') for i in range(SIZE)] for j in range(SIZE)]
 
     for i in range(SIZE):
         for j in range(SIZE):
@@ -221,8 +223,8 @@ def movePlayer():
 
         except:
         ### GET KEY RANDOMLY
-            # IF AI Couldnt Find the path to food, we use random choise
-            print("Use Random Choise")
+            # IF AI Couldn't Find the path to food, we use random choice
+            print("Thinking ...")
             get_key = choises[random.randint(0, 3)]
             while (last_key == 'w' and get_key == 's') or (last_key == 'a' and get_key == 'd') or \
                     (last_key == 's' and get_key == 'w') or (last_key == 'd' and get_key == 'a'):
@@ -294,7 +296,7 @@ def move(_row, _col):
             if map[i][j] == 'p' or map[i][j] == 'P':
                 map[i][j] = ' '
 
-    # The Lenght Of Snake Is Equel To Score , So Set The Body in Map with help of Score
+    # The Length Of Snake Is Equal To Score , So Set The Body in Map with help of Score
     for number in range(score):
         # Set The Head
         if number == score-1:
