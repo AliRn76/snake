@@ -1,9 +1,7 @@
 import operator
 import random
 import time
-import math
 import os
-
 
 class Player:
     def __init__(self, i, j):
@@ -19,14 +17,15 @@ temp_score = 1
 food_i = 0  # Row Of The Food
 food_j = 0  # Col Of The Food
 SIZE = 20   # Size Of The Map
-score = 1   # Score --> Lenght Of Body
+SLEEP = 0.05
+score = 1   # Score --> Length Of Body
 
-choises = ['a', 'w', 's', 'd']
+choices = ['a', 'w', 's', 'd']
 map = [['0' for i in range(SIZE)] for j in range(SIZE)]
 paths = []
 finalPath = []
 
-def setBorder():
+def set_border():
     global map
     map = [['#' if i == 0 or j == 0 or i == (SIZE-1) or j == (SIZE-1) else ' ' for i in range(SIZE)] for j in range(SIZE)]
 #     for i in range(SIZE):
@@ -37,7 +36,7 @@ def setBorder():
 #                 map[i][j] = ' '
 
 
-def printMap():
+def print_map():
     # os.system('cls')  # on Windows System
     os.system('clear')  # on Linux System
 
@@ -65,7 +64,7 @@ def start():
     global row, col, food_i, food_j
 
     # Create Empty Map and Set The Borders (walls)
-    setBorder()
+    set_border()
 
     # Set The Head of Snake
     row = random.randint(1, SIZE - 1)
@@ -85,7 +84,7 @@ def start():
     map[food_i][food_j] = '*'
 
     # Now Start The Game
-    movePlayer()
+    move_player()
 
 
 def calc_h_cost(_row, _col):
@@ -129,9 +128,7 @@ def final_path(_row, _col):
     try:
         new_row = finalPath[0][1]
         new_col = finalPath[0][2]
-
-    except:
-        # Just for Safety :)
+    except IndexError:
         return
 
     if finalPath[0][0] == 0:
@@ -160,9 +157,8 @@ def a_star(_row, _col):
     for _ in range(len(states)):
         new_row = _row + (states[_][0])
         new_col = _col + (states[_][1])
-
-        if map[new_row][new_col] != 'p' and map[new_row][new_col] != '#' and map[new_row][new_col] != '.' \
-                and map[new_row][new_col] != '*' and map[new_row][new_col] != 'P':
+        new_location = map[new_row][new_col]
+        if new_location != 'p' and new_location != '#' and new_location != '.' and new_location != '*' and new_location != 'P':
             f_and_pos = calc_f_cost(new_row, new_col), new_row, new_col
             paths.append(f_and_pos)
 
@@ -171,11 +167,16 @@ def a_star(_row, _col):
 
     # Sort The Array of Costs
     paths.sort(key=operator.itemgetter(0))
-    new_row = paths[0][1]
-    new_col = paths[0][2]
+    try:
+        new_row = paths[0][1]
+        new_col = paths[0][2]
+    except IndexError:
+        return
 
     if calc_h_cost(new_row, new_col) == 1:
         map[new_row][new_col] = '.'
+        # Print the final path
+        # print_map()
         # This Func just set the '.' in map , and we will use it for pathfinding
         return
 
@@ -184,6 +185,8 @@ def a_star(_row, _col):
         paths.reverse()
         paths.pop()
         map[new_row][new_col] = '.'
+        # This Print is for debugging (finding the path)
+        # print_map()
         return a_star(new_row, new_col)
 
 
@@ -196,15 +199,17 @@ def find_path():
     return next_pos
 
 
-def movePlayer():
+def move_player():
     global last_key, score, row, col
     while True:
-        printMap()
+        print_map()
         print("Score: ", score)
 
         try:
-        ### GET KEY WITH AI
+            ### GET KEY WITH AI
             next_pos = find_path()
+            if next_pos is None:
+                return print("\n* I'm Done *\n\n")
             new_row = next_pos[0]
             new_col = next_pos[1]
             if new_row > row:
@@ -219,26 +224,26 @@ def movePlayer():
             else:
                 print("Left")
                 get_key = 'a'
-            # time.sleep(0.05)
+        # time.sleep(0.05)
 
-        except:
-        ### GET KEY RANDOMLY
+        except RecursionError:
+            ### GET KEY RANDOMLY
             # IF AI Couldn't Find the path to food, we use random choice
             print("Thinking ...")
-            get_key = choises[random.randint(0, 3)]
+            get_key = choices[random.randint(0, 3)]
             while (last_key == 'w' and get_key == 's') or (last_key == 'a' and get_key == 'd') or \
                     (last_key == 's' and get_key == 'w') or (last_key == 'd' and get_key == 'a'):
-                get_key = choises[random.randint(0, 3)]
+                get_key = choices[random.randint(0, 3)]
 
         ### GET KEY MANUAL
         # get_key = input()
 
         last_key = get_key
         switcher = {
-            'w': goUp,
-            'a': goLeft,
-            's': goDown,
-            'd': goRight,
+            'w': go_up,
+            'a': go_left,
+            's': go_down,
+            'd': go_right,
         }
         switcher[get_key]()
         for i in range(SIZE):
@@ -247,27 +252,27 @@ def movePlayer():
                     map[i][j] = ' '
 
 
-def checkForWall(i, j):
+def check_for_wall(i, j):
     if map[i][j] == '#':
         return True
     # False mean there was no wall
     return False
 
 
-def checkForBody(i, j):
+def check_for_body(i, j):
     if map[i][j] == 'p':
         return True
     return False
 
 
-def checkForFood(i, j):
+def check_for_food(i, j):
     global score
     if map[i][j] == '*':
         score = score + 1
-        setFood()
+        set_food()
 
 
-def setFood():
+def set_food():
     global food_i, food_j
     food_i = random.randint(1, SIZE-1)
     food_j = random.randint(1, SIZE-1)
@@ -306,55 +311,55 @@ def move(_row, _col):
             map[body[number].i][body[number].j] = 'p'
 
 
-def goUp():
+def go_up():
     global row, col
-    if checkForWall(row-1, col):  # Check For Wall
+    if check_for_wall(row-1, col):  # Check For Wall
         return
-    if checkForBody(row-1, col):  # Check For Body
+    if check_for_body(row-1, col):  # Check For Body
         return
     row = row - 1  # Set New Row For Head Of Body
-    checkForFood(row, col)  # Check For Food In New Position
+    check_for_food(row, col)  # Check For Food In New Position
     move(row, col)  # Move The Body
-    time.sleep(0.19)
+    time.sleep(SLEEP)
     return
 
 
-def goLeft():
+def go_left():
     global row, col
-    if checkForWall(row, col-1):
+    if check_for_wall(row, col-1):
         return
-    if checkForBody(row, col-1):
+    if check_for_body(row, col-1):
         return
     col = col - 1
-    checkForFood(row, col)
+    check_for_food(row, col)
     move(row, col)
-    time.sleep(0.19)
+    time.sleep(SLEEP)
     return
 
 
-def goDown():
+def go_down():
     global row, col
-    if checkForWall(row+1, col):
+    if check_for_wall(row+1, col):
         return
-    if checkForBody(row+1, col):
+    if check_for_body(row+1, col):
         return
     row = row + 1
-    checkForFood(row, col)
+    check_for_food(row, col)
     move(row, col)
-    time.sleep(0.19)
+    time.sleep(SLEEP)
     return
 
 
-def goRight():
+def go_right():
     global row, col
-    if checkForWall(row, col+1):
+    if check_for_wall(row, col+1):
         return
-    if checkForBody(row, col+1):
+    if check_for_body(row, col+1):
         return
     col = col + 1
-    checkForFood(row, col)
+    check_for_food(row, col)
     move(row, col)
-    time.sleep(0.19)
+    time.sleep(SLEEP)
     return
 
 
@@ -364,3 +369,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
